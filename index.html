@@ -1,0 +1,2386 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Pure Drop - Mirzapur | Pure Drinking Water App</title>
+    <!-- PWA App Meta Tags (For Android / iOS / Play Store) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AR Pure Drop">
+    <link rel="icon" type="image/png" href="1000ml.png">
+    <link rel="apple-touch-icon" href="1000ml.png">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Devanagari', 'sans-serif'],
+                    },
+                    colors: {
+                        aqua: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up { animation: fadeUp 0.28s ease-out forwards; }
+        @keyframes floatBottle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+        .bottle-hover:hover svg,
+        .bottle-hover:hover img { animation: floatBottle 2s ease-in-out infinite; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen pb-24 md:pb-10">
+
+    <!-- ==================== TOP APP HEADER ==================== -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-sky-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+            <!-- Brand Logo & Location (सीक्रेट एडमिन के लिए लोगो पर 5 बार टैप करें) -->
+            <div class="flex items-center gap-3 cursor-pointer select-none" onclick="handleLogoTap()">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-white flex items-center justify-center shadow-md shadow-sky-200">
+                    <i class="fa-solid fa-droplet text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h1 id="siteBrandName" class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 leading-none">AR Pure Drop</h1>
+                        <span id="liveSyncBadge" class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                            <span>कनेक्ट हो रहा है...</span>
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                        <i class="fa-solid fa-location-dot text-sky-600 text-[11px]"></i>
+                        <span id="headerLocationText">मिर्जापुर, मड़ियाहूँ व जौनपुर (UP)</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Desktop Navigation Links (Admin बटन ग्राहकों से छिपा हुआ है) -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-2xl">
+                <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">होम / प्रोडक्ट्स</button>
+                <button onclick="switchTab('areas')" data-nav="areas" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">डिलीवरी एरिया</button>
+                <button onclick="switchTab('orders')" data-nav="orders" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">ऑर्डर व रिसीव</button>
+                <button onclick="switchTab('account')" data-nav="account" class="nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition-all">मेरी आईडी</button>
+            </nav>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-2">
+                <button onclick="switchTab('cart')" class="relative px-3.5 py-2 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm flex items-center gap-2 shadow-sm shadow-sky-200 transition">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="hidden sm:inline">कार्ट</span>
+                    <span id="headerCartBadge" class="min-w-[20px] h-5 px-1.5 rounded-full bg-white text-sky-700 text-xs font-extrabold flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN APP CONTAINER ==================== -->
+    <main class="max-w-6xl mx-auto px-4 pt-5">
+
+        <!-- ==================== TAB 1: HOME / SHOP ==================== -->
+        <section id="tab-home" class="tab-section animate-fade-up space-y-6">
+            <!-- Hero Banner -->
+            <div id="heroBanner" class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-600 via-blue-700 to-indigo-800 text-white p-6 sm:p-8 shadow-lg shadow-sky-900/10 bg-cover bg-center">
+                <div id="heroBannerOverlay" class="absolute inset-0 bg-slate-900/45 hidden"></div>
+                <div class="absolute -right-12 -top-12 w-56 h-56 rounded-full bg-white/10 blur-2xl"></div>
+                <div class="absolute -left-10 -bottom-16 w-48 h-48 rounded-full bg-sky-300/20 blur-2xl"></div>
+                <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div class="max-w-xl space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 text-xs font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span id="heroBadgeText">हर बूँद में शुद्धता • मिर्जापुर, मड़ियाहूँ व जौनपुर में तेज़ डिलीवरी</span>
+                        </div>
+                        <h2 id="heroTitle" class="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-tight">
+                            एआर प्योर ड्रॉप (AR Pure Drop)
+                        </h2>
+                        <p id="heroSubtitle" class="text-sm sm:text-base text-sky-100 leading-relaxed">
+                            100% शुद्ध, सुरक्षित और प्राकृतिक मिनरल युक्त पैकेज्ड ड्रिंकिंग वॉटर। शादी-विवाह, दुकान, ऑफिस और घर के लिए सीधे प्लांट से ऑनलाइन ऑर्डर करें।
+                        </p>
+                        <div class="flex flex-wrap gap-2.5 pt-1">
+                            <a href="#productsGrid" class="px-5 py-2.5 rounded-2xl bg-white text-blue-700 font-bold text-sm shadow hover:bg-sky-50 transition flex items-center gap-2">
+                                <i class="fa-solid fa-bag-shopping"></i> अभी ऑर्डर करें
+                            </a>
+                            <button onclick="switchTab('account')" class="px-5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 text-white font-semibold text-sm transition flex items-center gap-2">
+                                <i class="fa-solid fa-id-card"></i> <span id="heroIdBtnText">अपनी आईडी बनाएं</span>
+                            </button>
+                            <button id="installAppBtn" onclick="installPWAApp()" class="px-5 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm shadow transition flex items-center gap-2">
+                                <i class="fa-solid fa-mobile-screen-button"></i> ऐप डाउनलोड करें (Install App)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Highlights Cards -->
+                    <div class="grid grid-cols-2 gap-3 w-full md:w-auto">
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-3.5 text-center">
+                            <i class="fa-solid fa-shield-halved text-xl text-sky-200"></i>
+                            <div class="text-xs font-extrabold mt-1.5">100% शुद्ध</div>
+                            <div class="text-[11px] text-sky-100">प्राकृतिक मिनरल</div>
+                        </div>
+                        <div class="bg-white/15 backdrop-blur-sm border border-white/20 rounded-2xl p-3.5 text-center">
+                            <i class="fa-solid fa-truck-fast text-xl text-emerald-300"></i>
+                            <div class="text-xs font-extrabold mt-1.5">फ़ास्ट डिलीवरी</div>
+                            <div class="text-[11px] text-sky-100">मिर्जापुर व जौनपुर</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logged-in Customer Greeting Bar -->
+            <div id="userGreetingBar" class="hidden bg-white rounded-2xl border border-sky-200 p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div id="greetingAvatar" class="w-10 h-10 rounded-full bg-sky-600 text-white font-extrabold flex items-center justify-center text-base">A</div>
+                    <div>
+                        <div class="text-sm font-extrabold text-slate-900">नमस्ते, <span id="greetingName"></span>!</div>
+                        <div class="text-xs text-slate-500">आईडी: <strong id="greetingId" class="text-sky-700"></strong> • <span id="greetingArea"></span></div>
+                    </div>
+                </div>
+                <button onclick="switchTab('orders')" class="px-3.5 py-2 rounded-xl bg-sky-50 text-sky-700 font-bold text-xs border border-sky-200 hover:bg-sky-100">
+                    मेरे ऑर्डर देखें
+                </button>
+            </div>
+
+            <!-- Products Section -->
+            <div class="space-y-4">
+                <div class="flex flex-wrap items-end justify-between gap-2">
+                    <div>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900">हमारी पानी की बोतलें व केस (Products)</h3>
+                        <p id="productsSectionSubtitle" class="text-xs sm:text-sm text-slate-500 mt-0.5">250 ml (48 बोतल), 500 ml (24 बोतल), 1 लीटर (12 बोतल) और 2 लीटर (12 बोतल) केस — ज़ूम करने के लिए फ़ोटो पर क्लिक करें।</p>
+                    </div>
+                </div>
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: DELIVERY AREAS ==================== -->
+        <section id="tab-areas" class="tab-section hidden animate-fade-up space-y-5">
+            <div class="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">डिलीवरी एरिया व प्लांट का पता</h2>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">मिर्जापुर, मड़ियाहूँ और जौनपुर के प्रमुख क्षेत्रों में तेज़ व फ़्री होम/शॉप डिलीवरी।</p>
+                </div>
+
+                <!-- Plant Address Card -->
+                <div class="rounded-2xl bg-gradient-to-r from-sky-50 to-indigo-50 border border-sky-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="inline-flex items-center gap-1.5 text-xs font-extrabold text-sky-800">
+                            <i class="fa-solid fa-industry"></i> मुख्य पैकेजिंग प्लांट (Plant Address)
+                        </div>
+                        <p id="plantAddressText" class="text-sm font-bold text-slate-900"></p>
+                        <p id="plantHelplineText" class="text-xs text-slate-600"></p>
+                    </div>
+                    <button onclick="copyPlantAddress()" class="px-4 py-2.5 rounded-xl bg-white border border-sky-200 text-sky-700 font-bold text-xs shadow-sm hover:bg-sky-50 shrink-0">
+                        <i class="fa-regular fa-copy mr-1"></i> पता कॉपी करें
+                    </button>
+                </div>
+
+                <!-- Search Areas -->
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input id="areaSearchInput" type="text" oninput="renderAreas()" placeholder="अपना एरिया या पिनकोड खोजें (जैसे: मड़ियाहूँ, जौनपुर, विंध्याचल, 231001)..." class="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                </div>
+
+                <div id="areasGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: CART & CHECKOUT ==================== -->
+        <section id="tab-cart" class="tab-section hidden animate-fade-up space-y-5">
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">मेरा कार्ट व ऑर्डर कन्फर्मेशन</h2>
+
+            <!-- Empty Cart -->
+            <div id="cartEmptyState" class="bg-white rounded-3xl border border-slate-200 p-10 text-center space-y-3 shadow-sm">
+                <i class="fa-solid fa-cart-shopping text-4xl text-slate-300"></i>
+                <h3 class="font-bold text-slate-800">आपका कार्ट अभी खाली है</h3>
+                <p class="text-xs text-slate-500">ऑर्डर करने के लिए पहले पानी के केस कार्ट में जोड़ें।</p>
+                <button onclick="switchTab('home')" class="px-5 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow">
+                    प्रोडक्ट्स देखें
+                </button>
+            </div>
+
+            <!-- Cart Content -->
+            <div id="cartContentGrid" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <!-- Left: Cart Items -->
+                <div class="lg:col-span-7 space-y-3">
+                    <div id="cartItemsContainer" class="space-y-3"></div>
+                    <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-2 text-sm shadow-sm">
+                        <div class="flex justify-between text-slate-600">
+                            <span>सामान का कुल मूल्य</span>
+                            <span id="billSubtotal" class="font-bold">₹0</span>
+                        </div>
+                        <div class="flex justify-between text-emerald-600">
+                            <span>डिलीवरी चार्ज</span>
+                            <span class="font-bold">FREE</span>
+                        </div>
+                        <div class="border-t border-slate-100 pt-2 flex justify-between text-base font-extrabold text-slate-900">
+                            <span>कुल देय राशि</span>
+                            <span id="billTotal" class="text-sky-700">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Checkout Form -->
+                <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+                    <h3 class="text-base font-extrabold text-slate-900 mb-3">डिलीवरी विवरण भरें</h3>
+                    <form onsubmit="placeOrder(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">आपका पूरा नाम *</label>
+                            <input id="chkName" type="text" required placeholder="जैसे: राज खान / दुकान का नाम" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">मोबाइल नंबर *</label>
+                            <input id="chkPhone" type="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="10 अंकों का मोबाइल नंबर" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">डिलीवरी एरिया चुनें *</label>
+                            <select id="chkArea" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">पूरा पता / लैंडमार्क *</label>
+                            <textarea id="chkAddress" rows="2" required placeholder="मकान नं., गली, मोहल्ला या दुकान का पूरा पता" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">पेमेंट का तरीका</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer text-xs font-bold bg-slate-50">
+                                    <input type="radio" name="paymentMode" value="Cash on Delivery (COD)" checked class="accent-sky-600">
+                                    <span>कैश ऑन डिलीवरी</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-slate-200 cursor-pointer text-xs font-bold bg-slate-50">
+                                    <input type="radio" name="paymentMode" value="UPI on Delivery" class="accent-sky-600">
+                                    <span>डिलीवरी पर UPI</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-sm shadow-md transition">
+                            <i class="fa-solid fa-circle-check mr-1.5"></i> ऑर्डर कन्फर्म करें
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: ORDERS & RECEIVING ==================== -->
+        <section id="tab-orders" class="tab-section hidden animate-fade-up space-y-5">
+            <div>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">मेरे ऑर्डर व रिसीविंग</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">यहाँ केवल आपके अपने ऑर्डर दिखते हैं — डिजिटल रसीद देखें और डिलीवरी मिलने पर रिसीव कन्फर्म करें।</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+                <button id="ordFilter-all" onclick="filterOrders('all')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white">सभी ऑर्डर</button>
+                <button id="ordFilter-active" onclick="filterOrders('active')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-700">चल रहे (Active)</button>
+                <button id="ordFilter-received" onclick="filterOrders('received')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-700">रिसीव्ड (Received)</button>
+            </div>
+
+            <div id="ordersListContainer" class="space-y-4"></div>
+        </section>
+
+        <!-- ==================== TAB 5: CUSTOMER ID ACCOUNT ==================== -->
+        <section id="tab-account" class="tab-section hidden animate-fade-up space-y-5">
+            <div>
+                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">मेरी कस्टमर आईडी (Digital ID)</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">एक बार आईडी बनाने पर हर ऑर्डर में आपका नाम और पता अपने-आप भर जाएगा। आपकी आईडी केवल आपके फ़ोन पर दिखती है।</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <!-- Create ID Form -->
+                <div class="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+                    <h3 class="text-base font-extrabold text-slate-900 mb-3">नई कस्टमर आईडी बनाएं</h3>
+                    <form id="accountForm" onsubmit="saveUserAccount(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">पूरा नाम / दुकान का नाम *</label>
+                            <input id="accName" type="text" required placeholder="अपना नाम लिखें" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">मोबाइल नंबर *</label>
+                                <input id="accPhone" type="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="10 अंकों का नंबर" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">ग्राहक प्रकार</label>
+                                <select id="accType" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                                    <option value="घर (Home)">घर (Home)</option>
+                                    <option value="दुकान / रेस्टोरेंट (Shop)">दुकान / रेस्टोरेंट (Shop)</option>
+                                    <option value="ऑफिस (Office)">ऑफिस (Office)</option>
+                                    <option value="शादी / इवेंट (Event)">शादी / इवेंट (Event)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">एरिया चुनें *</label>
+                            <select id="accArea" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm bg-white focus:ring-2 focus:ring-sky-500 focus:outline-none"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">पूरा पता *</label>
+                            <textarea id="accAddress" rows="2" required placeholder="मकान नं., गली, मोहल्ला या लैंडमार्क" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-sm shadow transition">
+                            <i class="fa-solid fa-id-card mr-1.5"></i> मेरी आईडी सेव करें
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Digital ID Card & Saved Profiles -->
+                <div class="lg:col-span-6 space-y-4">
+                    <div class="rounded-3xl bg-gradient-to-br from-sky-700 via-blue-800 to-slate-900 text-white p-5 shadow-lg space-y-3">
+                        <div class="flex items-center justify-between border-b border-white/15 pb-3">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-droplet text-sky-300"></i>
+                                <span class="font-extrabold text-sm">AR PURE DROP DIGITAL ID</span>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-400/20 text-emerald-200 border border-emerald-400/30">VERIFIED</span>
+                        </div>
+                        <div id="idCardBody"></div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-extrabold text-slate-900">इस फ़ोन पर सेव आईडी</h3>
+                            <span id="totalUsersCount" class="text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded-full">0 आईडी</span>
+                        </div>
+                        <div id="registeredUsersList" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: SECRET ADMIN / SELLER PANEL ==================== -->
+        <section id="tab-admin" class="tab-section hidden animate-fade-up space-y-5">
+            <!-- Lock Screen -->
+            <div id="adminLockScreen" class="max-w-md mx-auto bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm text-center space-y-4">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900">सीक्रेट एडमिन / सेलर पैनल</h2>
+                    <p class="text-xs text-slate-500 mt-1">सभी ग्राहकों के ऑर्डर, साल भर की सेल रिपोर्ट, बोतल की फ़ोटो, साइज़ व रेट मैनेज करने के लिए अपना सीक्रेट कोड डालें।</p>
+                </div>
+                <form onsubmit="unlockAdminPanel(event)" class="space-y-3 text-left">
+                    <input id="adminCodeInput" type="password" required placeholder="एडमिन पासवर्ड डालें" class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm font-bold text-center focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <button type="submit" class="w-full py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow transition">
+                        <i class="fa-solid fa-unlock mr-1.5"></i> एडमिन पैनल खोलें (Unlock)
+                    </button>
+                </form>
+            </div>
+
+            <!-- Unlocked Admin Dashboard -->
+            <div id="adminDashboard" class="hidden space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">एडमिन कंट्रोल पैनल (Live)</h2>
+                        <p class="text-xs text-slate-500">यहाँ किए गए बदलाव तुरंत सभी ग्राहकों के फ़ोन में अपडेट हो जाते हैं।</p>
+                    </div>
+                    <button onclick="lockAdminPanel()" class="px-4 py-2 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-extrabold hover:bg-rose-100">
+                        <i class="fa-solid fa-lock mr-1"></i> लॉक करें
+                    </button>
+                </div>
+
+                <!-- Admin Sub-Tabs -->
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                    <button id="adminSubBtn-orders" onclick="switchAdminSubTab('orders')" class="px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-indigo-600 text-white">📦 सभी ऑर्डर</button>
+                    <button id="adminSubBtn-sales" onclick="switchAdminSubTab('sales')" class="px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-white border border-slate-200 text-slate-700">📊 महीना व तारीख़ सेल हिसाब</button>
+                    <button id="adminSubBtn-products" onclick="switchAdminSubTab('products')" class="px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-white border border-slate-200 text-slate-700">🧴 बोतल की फ़ोटो, साइज़ व रेट</button>
+                    <button id="adminSubBtn-site" onclick="switchAdminSubTab('site')" class="px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-white border border-slate-200 text-slate-700">⚙️ साइट व WhatsApp सेटिंग</button>
+                    <button id="adminSubBtn-security" onclick="switchAdminSubTab('security')" class="px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-white border border-slate-200 text-slate-700">🔑 एडमिन कोड बदलें</button>
+                </div>
+
+                <!-- SUB-TAB 1: ALL ORDERS -->
+                <div id="adminSub-orders" class="admin-sub-panel space-y-4">
+                    <div id="adminStatsGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+                    <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <h3 class="text-base font-extrabold text-slate-900">सभी ग्राहकों के लाइव ऑर्डर</h3>
+                        <div id="adminOrdersContainer" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 2: YEARLY, MONTHLY & DATE-WISE SALES REPORT -->
+                <div id="adminSub-sales" class="admin-sub-panel hidden space-y-5">
+                    <!-- Filter Controls -->
+                    <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <span class="text-xs font-extrabold text-slate-800"><i class="fa-solid fa-calendar-check text-indigo-600 mr-1"></i> साल व महीना चुनें:</span>
+                            <select id="adminSalesYearSelect" onchange="renderAdminSalesReport()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-extrabold text-slate-900"></select>
+                            <select id="adminSalesMonthSelect" onchange="renderAdminSalesReport()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-extrabold text-slate-900">
+                                <option value="all">सभी 12 महीने (पूरा साल)</option>
+                                <option value="0">जनवरी (January)</option>
+                                <option value="1">फ़रवरी (February)</option>
+                                <option value="2">मार्च (March)</option>
+                                <option value="3">अप्रैल (April)</option>
+                                <option value="4">मई (May)</option>
+                                <option value="5">जून (June)</option>
+                                <option value="6">जुलाई (July)</option>
+                                <option value="7">अगस्त (August)</option>
+                                <option value="8">सितंबर (September)</option>
+                                <option value="9">अक्टूबर (October)</option>
+                                <option value="10">नवंबर (November)</option>
+                                <option value="11">दिसंबर (December)</option>
+                            </select>
+                        </div>
+                        <button type="button" onclick="downloadAdminSalesCSV()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm flex items-center gap-1.5">
+                            <i class="fa-solid fa-file-excel"></i> सेल रिपोर्ट डाउनलोड (CSV)
+                        </button>
+                    </div>
+
+                    <!-- Yearly Summary KPIs -->
+                    <div id="adminYearlyKpiGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+                    <!-- 12-Month Breakdown Table -->
+                    <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <h3 class="text-base font-extrabold text-slate-900">साल भर का हर महीने का सेल हिसाब (Month-wise Sales)</h3>
+                                <p class="text-xs text-slate-500">किसी भी महीने की <strong>"तारीख़ें देखें"</strong> पर क्लिक करके जानें कि उस महीने में किस-किस तारीख़ को सेल हुआ था।</p>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 border-y border-slate-200 text-slate-700">
+                                        <th class="py-2.5 px-3 font-extrabold">महीना (Month)</th>
+                                        <th class="py-2.5 px-3 font-extrabold text-center">कुल ऑर्डर</th>
+                                        <th class="py-2.5 px-3 font-extrabold text-center">कुल केस बिके</th>
+                                        <th class="py-2.5 px-3 font-extrabold text-right">कुल सेल (₹)</th>
+                                        <th class="py-2.5 px-3 font-extrabold text-right">तारीख़-वार विवरण</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminMonthlyTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Date-wise Sales Breakdown -->
+                    <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 id="adminDateWiseTitle" class="text-base font-extrabold text-slate-900">तारीख़-वार सेल हिसाब (Date-wise Sales)</h3>
+                                <p class="text-xs text-slate-500">हर तारीख़ को हुए कुल ऑर्डर, बिके हुए केस और कुल सेल राशि का पूरा विवरण</p>
+                            </div>
+                        </div>
+                        <div id="adminDateWiseContainer" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB 3: PRODUCTS, SIZE LABELS & PHOTOS -->
+                <div id="adminSub-products" class="admin-sub-panel hidden">
+                    <div id="adminProductsEditorGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
+                <!-- SUB-TAB 4: SITE SETTINGS -->
+                <div id="adminSub-site" class="admin-sub-panel hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-5">
+                    <h3 class="text-lg font-extrabold text-slate-900">साइट, बैनर व WhatsApp सेटिंग्स</h3>
+
+                    <!-- Banner Upload -->
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                            <div class="text-xs font-extrabold text-slate-800">होम पेज बैनर फ़ोटो</div>
+                            <div class="text-[11px] text-slate-500">अपने प्लांट या ब्रांड का बैकग्राउंड बैनर लगाएं।</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <label class="cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+                                <i class="fa-solid fa-image mr-1"></i> बैनर बदलें
+                                <input type="file" accept="image/*" class="hidden" onchange="handleBannerPhotoUpload(event)">
+                            </label>
+                            <button type="button" onclick="resetBannerPhoto()" class="px-3 py-2 rounded-xl bg-white border border-slate-300 text-slate-700 text-xs font-bold">रीसेट</button>
+                        </div>
+                    </div>
+
+                    <form onsubmit="saveSiteSettings(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">ब्रांड का नाम</label>
+                            <input id="setBrandName" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">शहर / स्टिकर पता</label>
+                            <input id="setStickerAddr" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">होम हेडिंग (Hero Title)</label>
+                            <input id="setHeroTitle" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">टॉप बैज लाइन</label>
+                            <input id="setHeroBadge" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">होम विवरण (Subtitle)</label>
+                            <textarea id="setHeroSubtitle" rows="2" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">प्लांट का पूरा पता</label>
+                            <input id="setPlantAddress" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">हेल्पलाइन व समय</label>
+                            <input id="setPlantHelpline" type="text" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp ऑर्डर नंबर (10 अंक)</label>
+                            <input id="setWhatsappNumber" type="tel" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-emerald-700">
+                        </div>
+                        <div class="md:col-span-2">
+                            <button type="submit" class="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow transition">
+                                <i class="fa-solid fa-floppy-disk mr-1.5"></i> सभी सेटिंग्स लाइव सेव करें
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SUB-TAB 5: ADMIN CODE SECURITY -->
+                <div id="adminSub-security" class="admin-sub-panel hidden bg-white rounded-3xl border border-slate-200 p-6 shadow-sm max-w-lg space-y-4">
+                    <h3 class="text-lg font-extrabold text-slate-900">एडमिन कोड (Password) बदलें</h3>
+                    <p class="text-xs text-slate-500">यहाँ से सेट किया गया नया एडमिन कोड तुरंत सभी डिवाइस पर सेव हो जाएगा।</p>
+                    <form onsubmit="changeAdminCode(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">पुराना एडमिन कोड</label>
+                            <input id="oldAdminCode" type="password" required placeholder="वर्तमान कोड डालें" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">नया एडमिन कोड (कम से कम 4 अक्षर/अंक)</label>
+                            <input id="newAdminCode" type="text" required minlength="4" placeholder="जैसे: MYAR999" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <button type="submit" class="px-5 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow transition">
+                            <i class="fa-solid fa-shield-check mr-1.5"></i> नया एडमिन कोड अपडेट करें
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MOBILE BOTTOM APP NAVIGATION ==================== -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <div class="grid grid-cols-5 gap-1 max-w-md mx-auto">
+            <button onclick="switchTab('home')" data-mnav="home" class="mnav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-500">
+                <i class="fa-solid fa-house text-base"></i>
+                <span class="text-[10px] font-bold mt-0.5">होम</span>
+            </button>
+            <button onclick="switchTab('areas')" data-mnav="areas" class="mnav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-500">
+                <i class="fa-solid fa-location-dot text-base"></i>
+                <span class="text-[10px] font-bold mt-0.5">एरिया</span>
+            </button>
+            <button onclick="switchTab('cart')" data-mnav="cart" class="mnav-btn relative flex flex-col items-center justify-center py-1 rounded-xl text-slate-500">
+                <i class="fa-solid fa-cart-shopping text-base"></i>
+                <span id="mobileCartBadge" class="absolute top-0 right-3 min-w-[16px] h-4 px-1 rounded-full bg-sky-600 text-white text-[9px] font-bold flex items-center justify-center">0</span>
+                <span class="text-[10px] font-bold mt-0.5">कार्ट</span>
+            </button>
+            <button onclick="switchTab('orders')" data-mnav="orders" class="mnav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-500">
+                <i class="fa-solid fa-box-open text-base"></i>
+                <span class="text-[10px] font-bold mt-0.5">ऑर्डर</span>
+            </button>
+            <button onclick="switchTab('account')" data-mnav="account" class="mnav-btn flex flex-col items-center justify-center py-1 rounded-xl text-slate-500">
+                <i class="fa-solid fa-id-card text-base"></i>
+                <span class="text-[10px] font-bold mt-0.5">आईडी</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== FLOATING WHATSAPP ORDER BUTTON ==================== -->
+    <button onclick="openWhatsAppChat()" title="WhatsApp पर सीधा ऑर्डर या पूछताछ करें" class="fixed bottom-20 md:bottom-6 right-4 z-40 px-4 py-3 rounded-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-emerald-500/30 flex items-center gap-2 transition">
+        <i class="fa-brands fa-whatsapp text-xl"></i>
+        <span class="hidden sm:inline">WhatsApp ऑर्डर</span>
+    </button>
+
+    <!-- ==================== MODAL: BOTTLE STICKER ZOOM PREVIEW ==================== -->
+    <div id="stickerModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeModal('stickerModal')">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-fade-up" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 id="stickerModalTitle" class="text-lg font-extrabold text-slate-900">AR Pure Drop Bottle</h3>
+                    <p class="text-xs text-slate-500">ओरिजिनल ब्रांडिंग प्रीव्यू</p>
+                </div>
+                <button onclick="closeModal('stickerModal')" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="stickerModalPreview" class="bg-gradient-to-b from-sky-50 to-white border border-sky-100 rounded-2xl p-4 flex flex-col items-center justify-center"></div>
+            <div id="stickerModalFooter" class="flex items-center justify-between pt-2"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: DIGITAL RECEIPT ==================== -->
+    <div id="receiptModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeModal('receiptModal')">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-fade-up max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-receipt text-sky-600 text-lg"></i>
+                    <h3 class="text-base font-extrabold text-slate-900">डिजिटल बिल / रसीद</h3>
+                </div>
+                <button onclick="closeModal('receiptModal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="receiptModalBody" class="space-y-3 text-sm"></div>
+            <div class="flex flex-wrap gap-2 pt-2">
+                <button id="whatsappReceiptBtn" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center justify-center gap-1.5">
+                    <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp पर भेजें
+                </button>
+                <button id="copyReceiptBtn" class="flex-1 py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs transition">
+                    <i class="fa-regular fa-copy mr-1"></i> रसीद कॉपी करें
+                </button>
+                <button onclick="closeModal('receiptModal')" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+                    बंद करें
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST NOTIFICATION ==================== -->
+    <div id="toastBox" class="fixed top-20 right-4 z-50 hidden max-w-xs bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2.5 animate-fade-up">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toastMessage">सफलतापूर्वक सेव हुआ!</span>
+    </div>
+
+    <!-- ==================== APPLICATION LOGIC + LIVE CLOUD SYNC + LOCAL PERSISTENCE ==================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const LOCAL_STORAGE_KEY = 'ar_pure_drop_mirzapur_v4';
+
+        const HINDI_MONTHS = [
+            'जनवरी (January)', 'फ़रवरी (February)', 'मार्च (March)', 'अप्रैल (April)',
+            'मई (May)', 'जून (June)', 'जुलाई (July)', 'अगस्त (August)',
+            'सितंबर (September)', 'अक्टूबर (October)', 'नवंबर (November)', 'दिसंबर (December)'
+        ];
+
+        const CUSTOM_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyBHqN2tp_Hr0rqa7-LiT_OvS9aK_qDnlwY",
+            authDomain: "ar-pure-drop.firebaseapp.com",
+            projectId: "ar-pure-drop",
+            storageBucket: "ar-pure-drop.firebasestorage.app",
+            messagingSenderId: "213544439789",
+            appId: "1:213544439789:web:5e0b568d554096033121e4"
+        };
+
+        const DEFAULT_PRODUCTS = [
+            {
+                id: 'p230',
+                sizeLabel: '250 ml',
+                packInfo: '250 ml × 48 Bottles Case',
+                name: 'AR Pure Drop 250 ml केस (48 बोतल)',
+                price: 180,
+                badge: '48 बोतल केस',
+                desc: 'शादी-विवाह, पार्टी और मीटिंग के लिए 250 ml की 48 बोतलों का पूरा केस। हर बूँद में शुद्धता।',
+                heightClass: 'h-48',
+                widthScale: 0.85,
+                localPhotoFile: '230ml.png',
+                customImage: ''
+            },
+            {
+                id: 'p500',
+                sizeLabel: '500 ml',
+                packInfo: '500 ml × 24 Bottles Case',
+                name: 'AR Pure Drop 500 ml केस (24 बोतल)',
+                price: 110,
+                badge: '24 बोतल केस',
+                desc: 'दुकान, सफर और ऑफिस के लिए 500 ml की 24 बोतलों का हाइजीनिक केस। 100% प्योर व सेफ।',
+                heightClass: 'h-48',
+                widthScale: 0.92,
+                localPhotoFile: '500ml.png',
+                customImage: ''
+            },
+            {
+                id: 'p1000',
+                sizeLabel: '1000 ml (1L)',
+                packInfo: '1 Litre × 12 Bottles Case',
+                name: 'AR Pure Drop 1 लीटर केस (12 बोतल)',
+                price: 85,
+                badge: '12 बोतल केस',
+                desc: 'रेस्टोरेंट, होटल और रोज़मर्रा के लिए 1 लीटर की 12 बोतलों का सबसे लोकप्रिय केस।',
+                heightClass: 'h-48',
+                widthScale: 1.0,
+                localPhotoFile: '1000ml.png',
+                customImage: ''
+            },
+            {
+                id: 'p2000',
+                sizeLabel: '2000 ml (2L)',
+                packInfo: '2 Litre × 12 Bottles Case',
+                name: 'AR Pure Drop 2 लीटर केस (12 बोतल)',
+                price: 120,
+                badge: '12 बोतल केस',
+                desc: 'परिवार और बड़े आयोजनों के लिए 2 लीटर की 12 बोतलों का किफ़ायती फैमिली केस।',
+                heightClass: 'h-48',
+                widthScale: 1.08,
+                localPhotoFile: '2000ml.png',
+                customImage: ''
+            }
+        ];
+
+        const MIRZAPUR_AREAS = [
+            { name: 'मड़ियाहूँ (Mariahu)', pincode: '222161', time: '45 - 65 मिनट', charge: 'FREE' },
+            { name: 'जौनपुर (Jaunpur)', pincode: '222001', time: '60 - 90 मिनट', charge: 'FREE' },
+            { name: 'विंध्याचल (Vindhyachal)', pincode: '231307', time: '25 - 40 मिनट', charge: 'FREE' },
+            { name: 'सिविल लाइंस (Civil Lines)', pincode: '231001', time: '20 - 30 मिनट', charge: 'FREE' },
+            { name: 'कटरा कोतवाली (Katra Kotwali)', pincode: '231001', time: '20 - 35 मिनट', charge: 'FREE' },
+            { name: 'वासलीगंज (Wasliganj)', pincode: '231001', time: '25 - 35 मिनट', charge: 'FREE' },
+            { name: 'डंकीनगंज (Dankinganj)', pincode: '231001', time: '25 - 40 मिनट', charge: 'FREE' },
+            { name: 'रमईपट्टी (Ramaipatti)', pincode: '231001', time: '20 - 30 मिनट', charge: 'FREE' },
+            { name: 'संकट मोचन (Sankat Mochan)', pincode: '231001', time: '25 - 35 मिनट', charge: 'FREE' },
+            { name: 'चुनार (Chunar)', pincode: '231304', time: '45 - 60 मिनट', charge: 'FREE' },
+            { name: 'कछवां (Kachhwa)', pincode: '231501', time: '45 - 60 मिनट', charge: 'FREE' },
+            { name: 'लालगंज (Lalganj)', pincode: '231211', time: '50 - 70 मिनट', charge: 'FREE' },
+            { name: 'अहरौरा (Ahraura)', pincode: '231301', time: '45 - 65 मिनट', charge: 'FREE' },
+            { name: 'मड़िहान (Marihan)', pincode: '231310', time: '55 - 75 मिनट', charge: 'FREE' }
+        ];
+
+        const state = {
+            activeTab: 'home',
+            adminSubTab: 'orders',
+            adminUnlocked: false,
+            adminCode: 'Irfan0786',
+            orderFilter: 'all',
+            deviceId: '',
+            myOrderIds: [],
+            myUserIds: [],
+            siteConfig: {
+                brandName: 'AR Pure Drop',
+                stickerAddress: 'MIRZAPUR • MARIAHU • JAUNPUR',
+                heroBadge: 'हर बूँद में शुद्धता • मिर्जापुर, मड़ियाहूँ व जौनपुर में तेज़ डिलीवरी',
+                heroTitle: 'एआर प्योर ड्रॉप (AR Pure Drop)',
+                heroSubtitle: '100% शुद्ध, सुरक्षित और प्राकृतिक मिनरल युक्त पैकेज्ड ड्रिंकिंग वॉटर। शादी-विवाह, दुकान, ऑफिस और घर के लिए सीधे प्लांट से ऑनलाइन ऑर्डर करें।',
+                plantAddress: 'AR Pure Drop Packaging Unit, इंडस्ट्रियल एरिया, मिर्जापुर (उत्तर प्रदेश) - 231001',
+                plantHelpline: 'हेल्पलाइन: +91 96512-42467, +91 72338-97379 • समय: सुबह 6:00 बजे से रात 10:00 बजे तक',
+                whatsappNumber: '9651242467',
+                bannerImage: ''
+            },
+            products: JSON.parse(JSON.stringify(DEFAULT_PRODUCTS)),
+            cart: {},
+            users: [],
+            activeUserId: null,
+            orders: []
+        };
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'ar-pure-drop-mirzapur';
+        let db = null;
+        let auth = null;
+        let cloudUser = null;
+
+        let logoTapCount = 0;
+        let logoTapTimer = null;
+
+        function handleLogoTap() {
+            logoTapCount += 1;
+            clearTimeout(logoTapTimer);
+            if (logoTapCount >= 5) {
+                logoTapCount = 0;
+                switchTab('admin');
+                showToast('सीक्रेट एडमिन पैनल खुल गया!');
+                return;
+            }
+            if (logoTapCount === 1 && state.activeTab !== 'home') {
+                switchTab('home');
+            }
+            logoTapTimer = setTimeout(() => {
+                logoTapCount = 0;
+            }, 2500);
+        }
+
+        function getOrCreateDeviceId() {
+            const DEV_KEY = 'ar_pure_drop_device_id_v1';
+            try {
+                let id = window.localStorage.getItem(DEV_KEY);
+                if (!id) {
+                    id = 'DEV-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8);
+                    window.localStorage.setItem(DEV_KEY, id);
+                }
+                return id;
+            } catch (e) {
+                return 'DEV-' + Date.now().toString(36);
+            }
+        }
+
+        function isMyOrder(ord) {
+            if (!ord) return false;
+            return (
+                (state.deviceId && ord.deviceId === state.deviceId) ||
+                state.myOrderIds.includes(ord.id) ||
+                (state.activeUserId && ord.customerId === state.activeUserId)
+            );
+        }
+
+        function isMyUser(u) {
+            if (!u) return false;
+            return (
+                (state.deviceId && u.deviceId === state.deviceId) ||
+                state.myUserIds.includes(u.id)
+            );
+        }
+
+        function loadLocalBackup() {
+            state.deviceId = getOrCreateDeviceId();
+            try {
+                const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (!raw) return;
+                const saved = JSON.parse(raw);
+                if (saved.adminCode && saved.adminCode !== 'AR2026') {
+                    state.adminCode = saved.adminCode;
+                }
+                if (saved.siteConfig) state.siteConfig = { ...state.siteConfig, ...saved.siteConfig };
+                if (Array.isArray(saved.products) && saved.products.length === 4) {
+                    state.products = saved.products.map((p, idx) => ({ ...DEFAULT_PRODUCTS[idx], ...p }));
+                }
+                if (Array.isArray(saved.myOrderIds)) state.myOrderIds = saved.myOrderIds;
+                if (Array.isArray(saved.myUserIds)) state.myUserIds = saved.myUserIds;
+                if (Array.isArray(saved.users)) state.users = saved.users;
+                if (saved.activeUserId) state.activeUserId = saved.activeUserId;
+                if (Array.isArray(saved.orders)) state.orders = saved.orders;
+            } catch (e) {
+                console.warn('Local load skipped:', e);
+            }
+        }
+
+        function saveLocalBackup() {
+            try {
+                window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({
+                    adminCode: state.adminCode,
+                    deviceId: state.deviceId,
+                    myOrderIds: state.myOrderIds,
+                    myUserIds: state.myUserIds,
+                    siteConfig: state.siteConfig,
+                    products: state.products,
+                    users: state.users,
+                    activeUserId: state.activeUserId,
+                    orders: state.orders
+                }));
+            } catch (e) {
+                console.warn('Local save skipped:', e);
+            }
+        }
+
+        function setLiveBadge(mode) {
+            const badge = document.getElementById('liveSyncBadge');
+            if (!badge) return;
+            if (mode === 'live') {
+                badge.className = 'inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Live Sync</span>`;
+            } else {
+                badge.className = 'inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800';
+                badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span><span>Ready</span>`;
+            }
+        }
+
+        async function initCloudSync() {
+            try {
+                let firebaseConfig = null;
+                if (CUSTOM_FIREBASE_CONFIG && CUSTOM_FIREBASE_CONFIG.apiKey && CUSTOM_FIREBASE_CONFIG.projectId) {
+                    firebaseConfig = CUSTOM_FIREBASE_CONFIG;
+                } else if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    firebaseConfig = JSON.parse(__firebase_config);
+                }
+
+                if (!firebaseConfig) {
+                    setLiveBadge('offline');
+                    return;
+                }
+
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && !CUSTOM_FIREBASE_CONFIG.apiKey) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                cloudUser = auth.currentUser;
+                if (!cloudUser) {
+                    setLiveBadge('offline');
+                    return;
+                }
+
+                setLiveBadge('live');
+                attachLiveListeners();
+            } catch (err) {
+                console.error('Cloud sync initialization error:', err);
+                setLiveBadge('offline');
+            }
+        }
+
+        function attachLiveListeners() {
+            if (!cloudUser || !db) return;
+
+            const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'main');
+            onSnapshot(settingsRef, (snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    if (data.adminCode && data.adminCode !== 'AR2026') {
+                        state.adminCode = data.adminCode;
+                    }
+                    state.siteConfig = {
+                        brandName: data.brandName ?? state.siteConfig.brandName,
+                        stickerAddress: data.stickerAddress ?? state.siteConfig.stickerAddress,
+                        heroBadge: data.heroBadge ?? state.siteConfig.heroBadge,
+                        heroTitle: data.heroTitle ?? state.siteConfig.heroTitle,
+                        heroSubtitle: data.heroSubtitle ?? state.siteConfig.heroSubtitle,
+                        plantAddress: data.plantAddress ?? state.siteConfig.plantAddress,
+                        plantHelpline: data.plantHelpline ?? state.siteConfig.plantHelpline,
+                        whatsappNumber: data.whatsappNumber ?? state.siteConfig.whatsappNumber,
+                        bannerImage: data.bannerImage ?? ''
+                    };
+                    saveLocalBackup();
+                    applySiteConfig();
+                    renderProducts();
+                    renderCart();
+                    if (state.adminUnlocked) populateSiteSettingsForm();
+                }
+            }, (err) => console.error('Settings sync error:', err));
+
+            const productsCol = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+            onSnapshot(productsCol, (snap) => {
+                if (!snap.empty) {
+                    snap.forEach((docSnap) => {
+                        const updated = docSnap.data();
+                        const idx = state.products.findIndex(p => p.id === docSnap.id);
+                        if (idx !== -1) {
+                            state.products[idx] = { ...state.products[idx], ...updated };
+                        }
+                    });
+                    saveLocalBackup();
+                    renderProducts();
+                    renderCart();
+                    if (state.adminUnlocked) renderAdminProductsEditor();
+                }
+            }, (err) => console.error('Products sync error:', err));
+
+            const ordersCol = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+            onSnapshot(ordersCol, (snap) => {
+                const list = [];
+                snap.forEach((docSnap) => list.push({ id: docSnap.id, ...docSnap.data() }));
+                list.sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
+                state.orders = list;
+                saveLocalBackup();
+                renderOrders();
+                if (state.adminUnlocked) {
+                    renderAdminOrders();
+                    if (state.adminSubTab === 'sales') {
+                        populateAdminSalesYears();
+                        renderAdminSalesReport();
+                    }
+                }
+            }, (err) => console.error('Orders sync error:', err));
+
+            const usersCol = collection(db, 'artifacts', appId, 'public', 'data', 'customers');
+            onSnapshot(usersCol, (snap) => {
+                const list = [];
+                snap.forEach((docSnap) => list.push({ id: docSnap.id, ...docSnap.data() }));
+                list.sort((a, b) => (b.createdAtMs || 0) - (a.createdAtMs || 0));
+                state.users = list;
+                saveLocalBackup();
+                renderAccountSection();
+            }, (err) => console.error('Users sync error:', err));
+        }
+
+        async function syncSiteSettingsToCloud() {
+            saveLocalBackup();
+            if (!cloudUser || !db) return;
+            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'main');
+            await setDoc(ref, { ...state.siteConfig, adminCode: state.adminCode, updatedAt: Date.now() }, { merge: true });
+        }
+
+        async function syncProductToCloud(product) {
+            saveLocalBackup();
+            if (!cloudUser || !db) return;
+            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'products', product.id);
+            await setDoc(ref, {
+                name: product.name,
+                sizeLabel: product.sizeLabel,
+                packInfo: product.packInfo,
+                price: product.price,
+                badge: product.badge,
+                desc: product.desc,
+                localPhotoFile: product.localPhotoFile || '',
+                customImage: product.customImage || '',
+                updatedAt: Date.now()
+            }, { merge: true });
+        }
+
+        async function syncOrderToCloud(order) {
+            saveLocalBackup();
+            if (!cloudUser || !db) return;
+            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'orders', order.id);
+            await setDoc(ref, order, { merge: true });
+        }
+
+        async function syncUserToCloud(user) {
+            saveLocalBackup();
+            if (!cloudUser || !db) return;
+            const ref = doc(db, 'artifacts', appId, 'public', 'data', 'customers', user.id);
+            await setDoc(ref, user, { merge: true });
+        }
+
+        function generateBottleSVG(product, sizePx = 190) {
+            const brand = (state.siteConfig.brandName || 'AR PURE DROP').toUpperCase();
+            const addr = (state.siteConfig.stickerAddress || 'MIRZAPUR (U.P.)').toUpperCase();
+            const w = Math.round(130 * (product.widthScale || 1));
+            const h = sizePx;
+
+            return `
+            <svg viewBox="0 0 140 230" width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md select-none">
+                <defs>
+                    <linearGradient id="waterGrad-${product.id}" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.9"/>
+                        <stop offset="35%" stop-color="#e0f2fe" stop-opacity="0.95"/>
+                        <stop offset="70%" stop-color="#7dd3fc" stop-opacity="0.85"/>
+                        <stop offset="100%" stop-color="#0284c7" stop-opacity="0.85"/>
+                    </linearGradient>
+                    <linearGradient id="capGrad-${product.id}" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#0369a1"/>
+                        <stop offset="50%" stop-color="#0ea5e9"/>
+                        <stop offset="100%" stop-color="#0c4a6e"/>
+                    </linearGradient>
+                    <linearGradient id="labelGrad-${product.id}" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0284c7"/>
+                        <stop offset="55%" stop-color="#0369a1"/>
+                        <stop offset="100%" stop-color="#0f172a"/>
+                    </linearGradient>
+                </defs>
+                <rect x="52" y="8" width="36" height="16" rx="4" fill="url(#capGrad-${product.id})"/>
+                <rect x="50" y="22" width="40" height="5" rx="2" fill="#075985"/>
+                <path d="M54 27 L86 27 L92 46 Q112 58 114 78 L114 205 Q114 220 98 220 L42 220 Q26 220 26 205 L26 78 Q28 58 48 46 Z"
+                      fill="url(#waterGrad-${product.id})" stroke="#38bdf8" stroke-width="2"/>
+                <line x1="30" y1="84" x2="110" y2="84" stroke="#ffffff" stroke-opacity="0.65" stroke-width="2"/>
+                <line x1="30" y1="186" x2="110" y2="186" stroke="#ffffff" stroke-opacity="0.6" stroke-width="2"/>
+                <line x1="30" y1="196" x2="110" y2="196" stroke="#ffffff" stroke-opacity="0.5" stroke-width="2"/>
+                <rect x="35" y="65" width="9" height="135" rx="4.5" fill="#ffffff" fill-opacity="0.45"/>
+                <rect x="27" y="96" width="86" height="78" rx="4" fill="url(#labelGrad-${product.id})" stroke="#e0f2fe" stroke-width="1.5"/>
+                <rect x="27" y="96" width="86" height="14" rx="2" fill="#ffffff" fill-opacity="0.16"/>
+                <text x="70" y="106" text-anchor="middle" fill="#bae6fd" font-size="6.2" font-weight="700" font-family="Inter, sans-serif">HAR BOOND MEIN SHUDDHTA</text>
+                <path d="M70 112 C70 112 64 119 64 123 C64 126.3 66.7 129 70 129 C73.3 129 76 126.3 76 123 C76 119 70 112 70 112 Z" fill="#38bdf8"/>
+                <circle cx="68.5" cy="122" r="1.5" fill="#ffffff"/>
+                <text x="70" y="141" text-anchor="middle" fill="#ffffff" font-size="9.5" font-weight="800" font-family="Inter, sans-serif">${brand.slice(0, 14)}</text>
+                <text x="70" y="151" text-anchor="middle" fill="#fde047" font-size="6.4" font-weight="700" font-family="Inter, sans-serif">${addr.slice(0, 18)}</text>
+                <rect x="40" y="156" width="60" height="14" rx="7" fill="#ffffff"/>
+                <text x="70" y="166" text-anchor="middle" fill="#0369a1" font-size="8.2" font-weight="800" font-family="Inter, sans-serif">${product.sizeLabel}</text>
+            </svg>`;
+        }
+
+        function getBottleVisualHTML(product, isZoom = false) {
+            const imgSrc = product.customImage || product.localPhotoFile || '';
+            const svgFallback = generateBottleSVG(product, isZoom ? 240 : 185);
+            if (!imgSrc) {
+                return `<div class="flex items-center justify-center w-full h-full">${svgFallback}</div>`;
+            }
+            const imgClass = isZoom
+                ? 'max-h-[340px] w-auto object-contain rounded-2xl shadow-md'
+                : 'h-full w-full object-contain rounded-2xl';
+            return `
+                <div class="relative w-full h-full flex items-center justify-center">
+                    <img src="${imgSrc}" alt="${product.name}" class="${imgClass}"
+                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <div class="hidden flex items-center justify-center w-full h-full">${svgFallback}</div>
+                </div>
+            `;
+        }
+
+        function compressImageFile(file, maxWidth = 720, quality = 0.78) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleProductPhotoUpload(event, productId) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const prod = state.products.find(p => p.id === productId);
+            if (!prod) return;
+
+            try {
+                showToast('फ़ोटो प्रोसेस और लाइव सेव हो रही है...');
+                const compressedDataUrl = await compressImageFile(file, 720, 0.8);
+                prod.customImage = compressedDataUrl;
+                renderProducts();
+                renderCart();
+                renderAdminProductsEditor();
+                await syncProductToCloud(prod);
+                showToast(`${prod.sizeLabel} की नई फ़ोटो लाइव लग गई!`);
+            } catch (err) {
+                console.error(err);
+                showToast('फ़ोटो अपलोड करने में समस्या आई।', true);
+            } finally {
+                event.target.value = '';
+            }
+        }
+
+        async function resetProductPhoto(productId) {
+            const prod = state.products.find(p => p.id === productId);
+            if (!prod) return;
+            prod.customImage = '';
+            renderProducts();
+            renderCart();
+            renderAdminProductsEditor();
+            await syncProductToCloud(prod);
+            showToast(`${prod.sizeLabel} की डिफ़ॉल्ट फ़ोटो वापस आ गई।`);
+        }
+
+        async function saveProductEdits(event, productId) {
+            event.preventDefault();
+            const prod = state.products.find(p => p.id === productId);
+            if (!prod) return;
+            prod.sizeLabel = document.getElementById(`editSizeLabel-${productId}`).value.trim() || prod.sizeLabel;
+            prod.badge = document.getElementById(`editBadge-${productId}`).value.trim() || prod.badge;
+            prod.name = document.getElementById(`editName-${productId}`).value.trim();
+            prod.price = Math.max(1, Number(document.getElementById(`editPrice-${productId}`).value) || prod.price);
+            prod.packInfo = document.getElementById(`editPack-${productId}`).value.trim();
+            prod.desc = document.getElementById(`editDesc-${productId}`).value.trim();
+            renderProducts();
+            renderCart();
+            renderAdminProductsEditor();
+            await syncProductToCloud(prod);
+            showToast(`${prod.sizeLabel} का साइज़, नाम और रेट लाइव सेव हो गया!`);
+        }
+
+        function downloadBottlePNG(productId) {
+            const prod = state.products.find(p => p.id === productId);
+            if (!prod) return;
+            const svgStr = generateBottleSVG(prod, 460);
+            const svgBlob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = 420;
+                canvas.height = 540;
+                const ctx = canvas.getContext('2d');
+                const grad = ctx.createLinearGradient(0, 0, 0, 540);
+                grad.addColorStop(0, '#e0f2fe');
+                grad.addColorStop(1, '#ffffff');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, 420, 540);
+                ctx.drawImage(img, (420 - img.width) / 2, 30);
+                ctx.fillStyle = '#0369a1';
+                ctx.font = 'bold 22px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${state.siteConfig.brandName} • ${prod.sizeLabel} • ₹${prod.price}`, 210, 515);
+                const pngUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = prod.localPhotoFile || `AR-Pure-Drop-${prod.sizeLabel.replace(/\s+/g, '')}.png`;
+                link.href = pngUrl;
+                link.click();
+                URL.revokeObjectURL(url);
+                showToast(`${prod.sizeLabel} की PNG फ़ोटो डाउनलोड हो गई!`);
+            };
+            img.src = url;
+        }
+
+        async function handleBannerPhotoUpload(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            try {
+                const dataUrl = await compressImageFile(file, 960, 0.78);
+                state.siteConfig.bannerImage = dataUrl;
+                applySiteConfig();
+                await syncSiteSettingsToCloud();
+                showToast('होम बैनर की नई फ़ोटो लाइव सेव हो गई!');
+            } catch (err) {
+                showToast('बैनर फ़ोटो अपलोड करने में समस्या आई।', true);
+            } finally {
+                event.target.value = '';
+            }
+        }
+
+        async function resetBannerPhoto() {
+            state.siteConfig.bannerImage = '';
+            applySiteConfig();
+            await syncSiteSettingsToCloud();
+            showToast('डिफ़ॉल्ट नीला बैनर वापस आ गया।');
+        }
+
+        function applySiteConfig() {
+            const cfg = state.siteConfig;
+            document.getElementById('siteBrandName').textContent = cfg.brandName;
+            document.getElementById('headerLocationText').textContent = cfg.stickerAddress;
+            document.getElementById('heroBadgeText').textContent = cfg.heroBadge;
+            document.getElementById('heroTitle').textContent = cfg.heroTitle;
+            document.getElementById('heroSubtitle').textContent = cfg.heroSubtitle;
+            document.getElementById('plantAddressText').textContent = cfg.plantAddress;
+            document.getElementById('plantHelplineText').textContent = cfg.plantHelpline;
+
+            const heroBanner = document.getElementById('heroBanner');
+            const overlay = document.getElementById('heroBannerOverlay');
+            if (cfg.bannerImage) {
+                heroBanner.style.backgroundImage = `url('${cfg.bannerImage}')`;
+                overlay.classList.remove('hidden');
+            } else {
+                heroBanner.style.backgroundImage = '';
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+
+            const subEl = document.getElementById('productsSectionSubtitle');
+            if (subEl && state.products.length) {
+                const labels = state.products.map(x => `${x.sizeLabel} (${x.badge})`).join(', ');
+                subEl.textContent = `${labels} — ज़ूम करने के लिए फ़ोटो पर क्लिक करें।`;
+            }
+
+            grid.innerHTML = state.products.map(p => {
+                const qty = state.cart[p.id] || 0;
+                return `
+                <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-sky-100 text-sky-800">${p.sizeLabel}</span>
+                            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">${p.badge}</span>
+                        </div>
+
+                        <div onclick="openStickerModal('${p.id}')" class="bottle-hover cursor-pointer bg-gradient-to-b from-sky-50 to-white border border-sky-100 rounded-2xl p-2 h-56 flex items-center justify-center relative group overflow-hidden">
+                            ${getBottleVisualHTML(p, false)}
+                            <span class="absolute bottom-2 right-2 text-[10px] font-bold bg-white/90 text-slate-700 px-2 py-1 rounded-lg border border-slate-200 shadow-sm opacity-90 group-hover:opacity-100">
+                                <i class="fa-solid fa-magnifying-glass-plus mr-0.5 text-sky-600"></i> ज़ूम
+                            </span>
+                        </div>
+
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-sm sm:text-base leading-snug">${p.name}</h4>
+                            <p class="text-[11px] font-bold text-sky-700 mt-0.5">${p.packInfo}</p>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-2">${p.desc}</p>
+                        </div>
+                    </div>
+
+                    <div class="px-4 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <div>
+                            <div class="text-[10px] text-slate-400 font-semibold">प्लांट रेट</div>
+                            <div class="text-xl font-extrabold text-slate-900">₹${p.price}</div>
+                        </div>
+
+                        ${qty === 0 ? `
+                            <button onclick="updateCart('${p.id}', 1)" class="px-4 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-700 active:scale-95 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-cart-plus"></i> जोड़ें (Add)
+                            </button>
+                        ` : `
+                            <div class="flex items-center gap-2 bg-sky-50 border border-sky-200 rounded-2xl p-1">
+                                <button onclick="updateCart('${p.id}', -1)" class="w-8 h-8 rounded-xl bg-white text-sky-700 font-extrabold shadow-sm hover:bg-sky-100">-</button>
+                                <span class="w-6 text-center font-extrabold text-sm text-sky-900">${qty}</span>
+                                <button onclick="updateCart('${p.id}', 1)" class="w-8 h-8 rounded-xl bg-sky-600 text-white font-extrabold shadow-sm hover:bg-sky-700">+</button>
+                            </div>
+                        `}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function openStickerModal(productId) {
+            const p = state.products.find(x => x.id === productId);
+            if (!p) return;
+            document.getElementById('stickerModalTitle').textContent = `${p.name} (₹${p.price})`;
+            document.getElementById('stickerModalPreview').innerHTML = getBottleVisualHTML(p, true);
+            document.getElementById('stickerModalFooter').innerHTML = `
+                <div>
+                    <div class="text-xs text-slate-500">${p.packInfo}</div>
+                    <div class="text-lg font-extrabold text-sky-700">₹${p.price}</div>
+                </div>
+                <button onclick="updateCart('${p.id}', 1); closeModal('stickerModal');" class="px-5 py-2.5 rounded-2xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs shadow">
+                    <i class="fa-solid fa-cart-plus mr-1"></i> कार्ट में जोड़ें
+                </button>
+            `;
+            document.getElementById('stickerModal').classList.remove('hidden');
+        }
+
+        function populateAreaDropdowns() {
+            const options = MIRZAPUR_AREAS.map(a => `<option value="${a.name}">${a.name} (${a.pincode})</option>`).join('');
+            const chkArea = document.getElementById('chkArea');
+            const accArea = document.getElementById('accArea');
+            if (chkArea) chkArea.innerHTML = options;
+            if (accArea) accArea.innerHTML = options;
+        }
+
+        function renderAreas() {
+            const q = (document.getElementById('areaSearchInput')?.value || '').toLowerCase().trim();
+            const filtered = MIRZAPUR_AREAS.filter(a => a.name.toLowerCase().includes(q) || a.pincode.includes(q));
+            const grid = document.getElementById('areasGrid');
+            if (!grid) return;
+
+            if (!filtered.length) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-sm text-slate-500">कोई एरिया नहीं मिला। कृपया मिर्जापुर, मड़ियाहूँ या जौनपुर चुनें या WhatsApp पर संपर्क करें।</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(a => `
+                <div class="rounded-2xl border border-slate-200 p-4 bg-slate-50/70 hover:bg-white hover:border-sky-300 transition flex items-start justify-between gap-3">
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">${a.name}</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">पिनकोड: <strong>${a.pincode}</strong></p>
+                        <p class="text-xs text-sky-700 font-semibold mt-1"><i class="fa-regular fa-clock mr-1"></i> समय: ${a.time}</p>
+                    </div>
+                    <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">${a.charge}</span>
+                </div>
+            `).join('');
+        }
+
+        function copyPlantAddress() {
+            copyText(`${state.siteConfig.plantAddress} | ${state.siteConfig.plantHelpline}`, 'प्लांट का पता कॉपी हो गया!');
+        }
+
+        function updateCart(productId, delta) {
+            const current = state.cart[productId] || 0;
+            const next = current + delta;
+            if (next <= 0) delete state.cart[productId];
+            else state.cart[productId] = next;
+
+            renderProducts();
+            renderCart();
+            updateCartBadges();
+            if (delta > 0) showToast('कार्ट में जोड़ा गया!');
+        }
+
+        function updateCartBadges() {
+            const count = Object.values(state.cart).reduce((sum, n) => sum + n, 0);
+            document.getElementById('headerCartBadge').textContent = count;
+            document.getElementById('mobileCartBadge').textContent = count;
+        }
+
+        function renderCart() {
+            const items = Object.entries(state.cart)
+                .map(([id, qty]) => {
+                    const p = state.products.find(x => x.id === id);
+                    return p ? { ...p, qty } : null;
+                })
+                .filter(Boolean);
+
+            const emptyEl = document.getElementById('cartEmptyState');
+            const gridEl = document.getElementById('cartContentGrid');
+            const listEl = document.getElementById('cartItemsContainer');
+
+            if (!items.length) {
+                emptyEl.classList.remove('hidden');
+                gridEl.classList.add('hidden');
+                return;
+            }
+
+            emptyEl.classList.add('hidden');
+            gridEl.classList.remove('hidden');
+
+            let total = 0;
+            listEl.innerHTML = items.map(item => {
+                const sub = item.price * item.qty;
+                total += sub;
+                return `
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center justify-between gap-3 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-16 h-16 rounded-xl bg-sky-50 border border-sky-100 p-1 flex items-center justify-center overflow-hidden shrink-0">
+                            ${getBottleVisualHTML(item, false)}
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-slate-900 text-sm">${item.name}</h4>
+                            <p class="text-xs text-slate-500">₹${item.price} × ${item.qty} = <strong class="text-sky-700">₹${sub}</strong></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-slate-100 rounded-xl p-1">
+                        <button onclick="updateCart('${item.id}', -1)" class="w-7 h-7 rounded-lg bg-white text-slate-700 font-bold shadow-sm">-</button>
+                        <span class="w-6 text-center text-xs font-extrabold">${item.qty}</span>
+                        <button onclick="updateCart('${item.id}', 1)" class="w-7 h-7 rounded-lg bg-sky-600 text-white font-bold shadow-sm">+</button>
+                    </div>
+                </div>`;
+            }).join('');
+
+            document.getElementById('billSubtotal').textContent = `₹${total}`;
+            document.getElementById('billTotal').textContent = `₹${total}`;
+            prefillCheckoutFromActiveUser();
+        }
+
+        function prefillCheckoutFromActiveUser() {
+            const user = state.users.find(u => u.id === state.activeUserId);
+            if (!user) return;
+            const n = document.getElementById('chkName');
+            const p = document.getElementById('chkPhone');
+            const a = document.getElementById('chkArea');
+            const addr = document.getElementById('chkAddress');
+            if (n && !n.value) n.value = user.name;
+            if (p && !p.value) p.value = user.phone;
+            if (a && user.area) a.value = user.area;
+            if (addr && !addr.value) addr.value = user.address;
+        }
+
+        async function placeOrder(event) {
+            event.preventDefault();
+            const items = Object.entries(state.cart)
+                .map(([id, qty]) => {
+                    const p = state.products.find(x => x.id === id);
+                    return p ? { id: p.id, name: p.name, sizeLabel: p.sizeLabel, price: p.price, qty } : null;
+                })
+                .filter(Boolean);
+
+            if (!items.length) {
+                showToast('कृपया पहले कार्ट में बोतल जोड़ें!', true);
+                return;
+            }
+
+            const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+            const paymentMode = document.querySelector('input[name="paymentMode"]:checked')?.value || 'Cash on Delivery (COD)';
+            const now = new Date();
+            const ord = {
+                id: `AR-${Math.floor(100000 + Math.random() * 900000)}`,
+                deviceId: state.deviceId,
+                customerId: state.activeUserId || 'GUEST',
+                customerName: document.getElementById('chkName').value.trim(),
+                phone: document.getElementById('chkPhone').value.trim(),
+                area: document.getElementById('chkArea').value,
+                address: document.getElementById('chkAddress').value.trim(),
+                paymentMode,
+                items,
+                total,
+                status: 'Confirmed',
+                createdAt: now.toLocaleString('hi-IN'),
+                createdAtMs: now.getTime(),
+                receivedAt: ''
+            };
+
+            state.orders.unshift(ord);
+            if (!state.myOrderIds.includes(ord.id)) {
+                state.myOrderIds.unshift(ord.id);
+            }
+            state.cart = {};
+            updateCartBadges();
+            renderProducts();
+            renderCart();
+            renderOrders();
+            if (state.adminUnlocked) {
+                renderAdminOrders();
+                if (state.adminSubTab === 'sales') {
+                    populateAdminSalesYears();
+                    renderAdminSalesReport();
+                }
+            }
+
+            await syncOrderToCloud(ord);
+            showToast(`ऑर्डर ${ord.id} कन्फर्म हो गया!`);
+            switchTab('orders');
+            openReceiptModal(ord.id);
+        }
+
+        function filterOrders(type) {
+            state.orderFilter = type;
+            ['all', 'active', 'received'].forEach(k => {
+                const btn = document.getElementById(`ordFilter-${k}`);
+                if (!btn) return;
+                btn.className = k === type
+                    ? 'px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white'
+                    : 'px-3.5 py-2 rounded-xl text-xs font-bold bg-white border border-slate-200 text-slate-700';
+            });
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('ordersListContainer');
+            if (!container) return;
+
+            const myOrders = state.orders.filter(isMyOrder);
+
+            const filtered = myOrders.filter(o => {
+                if (state.orderFilter === 'active') return o.status !== 'Received';
+                if (state.orderFilter === 'received') return o.status === 'Received';
+                return true;
+            });
+
+            if (!filtered.length) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-3xl border border-slate-200 p-10 text-center space-y-3">
+                        <i class="fa-solid fa-box-open text-4xl text-slate-300"></i>
+                        <h3 class="font-bold text-slate-800">अभी कोई ऑर्डर नहीं है</h3>
+                        <p class="text-xs text-slate-500">होम पेज से पानी की बोतलें चुनकर अपना पहला ऑर्डर करें।</p>
+                        <button onclick="switchTab('home')" class="px-5 py-2.5 rounded-2xl bg-sky-600 text-white font-bold text-xs">ऑर्डर करें</button>
+                    </div>`;
+                return;
+            }
+
+            const badgeMap = {
+                'Confirmed': 'bg-sky-100 text-sky-800',
+                'Packed': 'bg-amber-100 text-amber-800',
+                'Out for Delivery': 'bg-indigo-100 text-indigo-800',
+                'Received': 'bg-emerald-100 text-emerald-800'
+            };
+
+            container.innerHTML = filtered.map(ord => {
+                const isReceived = ord.status === 'Received';
+                return `
+                <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="font-extrabold text-slate-900 text-sm">${ord.id}</span>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full ${badgeMap[ord.status] || 'bg-slate-100 text-slate-700'}">${ord.status}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">${ord.createdAt} • ${ord.paymentMode}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg font-extrabold text-sky-700">₹${ord.total}</span>
+                            <button onclick="openReceiptModal('${ord.id}')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+                                <i class="fa-solid fa-receipt mr-1"></i> रसीद
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1">
+                        <p><strong>ग्राहक:</strong> ${ord.customerName} (${ord.phone})</p>
+                        <p><strong>पता:</strong> ${ord.address}, ${ord.area}</p>
+                        <div class="pt-1 flex flex-wrap gap-1.5">
+                            ${(ord.items || []).map(i => `<span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-800 font-semibold">${i.sizeLabel} × ${i.qty} (₹${i.price * i.qty})</span>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="sendOrderToWhatsApp('${ord.id}')" class="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-xs transition flex items-center gap-1.5">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> WhatsApp पर भेजें
+                            </button>
+                            ${isReceived ? `
+                                <div class="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-check text-base"></i>
+                                    रिसीव हो गया (${ord.receivedAt || 'अभी'})
+                                </div>
+                            ` : ''}
+                        </div>
+                        ${!isReceived ? `
+                            <button onclick="markOrderReceived('${ord.id}')" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-hand-holding-droplet"></i> ऑर्डर रिसीव करें (Confirm Receive)
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function markOrderReceived(orderId) {
+            const ord = state.orders.find(o => o.id === orderId);
+            if (!ord) return;
+            ord.status = 'Received';
+            ord.receivedAt = new Date().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' });
+            renderOrders();
+            if (state.adminUnlocked) renderAdminOrders();
+            await syncOrderToCloud(ord);
+            showToast(`ऑर्डर ${ord.id} सफलतापूर्वक रिसीव कन्फर्म हुआ!`);
+        }
+
+        async function saveUserAccount(event) {
+            event.preventDefault();
+            const user = {
+                id: `ARPD-UP-${Math.floor(1000 + Math.random() * 9000)}`,
+                deviceId: state.deviceId,
+                name: document.getElementById('accName').value.trim(),
+                phone: document.getElementById('accPhone').value.trim(),
+                type: document.getElementById('accType').value,
+                area: document.getElementById('accArea').value,
+                address: document.getElementById('accAddress').value.trim(),
+                createdAtMs: Date.now()
+            };
+            state.users.unshift(user);
+            if (!state.myUserIds.includes(user.id)) {
+                state.myUserIds.unshift(user.id);
+            }
+            state.activeUserId = user.id;
+            document.getElementById('accountForm').reset();
+            renderAccountSection();
+            prefillCheckoutFromActiveUser();
+            await syncUserToCloud(user);
+            showToast(`आपकी नई आईडी ${user.id} बन गई है!`);
+        }
+
+        function switchActiveUser(userId) {
+            const target = state.users.find(u => u.id === userId && isMyUser(u));
+            if (!target) return;
+            state.activeUserId = userId;
+            saveLocalBackup();
+            renderAccountSection();
+            renderOrders();
+            prefillCheckoutFromActiveUser();
+            showToast('कस्टमर आईडी लॉगिन हो गई!');
+        }
+
+        function renderAccountSection() {
+            const myUsers = state.users.filter(isMyUser);
+            const active = myUsers.find(u => u.id === state.activeUserId);
+            const cardBody = document.getElementById('idCardBody');
+            const greetBar = document.getElementById('userGreetingBar');
+
+            if (active) {
+                cardBody.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3 text-xs pt-1">
+                        <div>
+                            <div class="text-sky-300 text-[10px] uppercase">कस्टमर आईडी</div>
+                            <div class="font-extrabold text-sm tracking-wider">${active.id}</div>
+                        </div>
+                        <div>
+                            <div class="text-sky-300 text-[10px] uppercase">अकाउंट टाइप</div>
+                            <div class="font-bold">${active.type}</div>
+                        </div>
+                        <div>
+                            <div class="text-sky-300 text-[10px] uppercase">नाम</div>
+                            <div class="font-bold text-sm">${active.name}</div>
+                        </div>
+                        <div>
+                            <div class="text-sky-300 text-[10px] uppercase">मोबाइल</div>
+                            <div class="font-bold">${active.phone}</div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="text-sky-300 text-[10px] uppercase">डिलीवरी पता</div>
+                            <div class="font-medium text-sky-100">${active.address}, ${active.area}</div>
+                        </div>
+                    </div>`;
+
+                greetBar.classList.remove('hidden');
+                document.getElementById('greetingAvatar').textContent = active.name.charAt(0).toUpperCase();
+                document.getElementById('greetingName').textContent = active.name;
+                document.getElementById('greetingId').textContent = active.id;
+                document.getElementById('greetingArea').textContent = active.area;
+                document.getElementById('heroIdBtnText').textContent = `मेरी आईडी (${active.id})`;
+            } else {
+                greetBar.classList.add('hidden');
+                cardBody.innerHTML = `<p class="text-sm text-sky-100 py-4 text-center">बाईं ओर फॉर्म भरकर अपनी डिजिटल कस्टमर आईडी तुरंत बनाएं।</p>`;
+                document.getElementById('heroIdBtnText').textContent = 'अपनी आईडी बनाएं';
+            }
+
+            document.getElementById('totalUsersCount').textContent = `${myUsers.length} आईडी`;
+            const listEl = document.getElementById('registeredUsersList');
+            if (!myUsers.length) {
+                listEl.innerHTML = `<p class="text-xs text-slate-400 text-center py-3">आपकी प्राइवेसी सुरक्षित है — इस फ़ोन पर अभी कोई आईडी नहीं बनी है।</p>`;
+                return;
+            }
+            listEl.innerHTML = myUsers.map(u => `
+                <div class="flex items-center justify-between p-2.5 rounded-xl border ${u.id === state.activeUserId ? 'border-sky-500 bg-sky-50' : 'border-slate-200 bg-slate-50'}">
+                    <div>
+                        <div class="text-xs font-extrabold text-slate-900">${u.name} <span class="text-sky-700">(${u.id})</span></div>
+                        <div class="text-[11px] text-slate-500">${u.phone} • ${u.area}</div>
+                    </div>
+                    <button onclick="switchActiveUser('${u.id}')" class="px-3 py-1.5 rounded-lg text-[11px] font-bold ${u.id === state.activeUserId ? 'bg-sky-600 text-white' : 'bg-white border border-slate-300 text-slate-700'}">
+                        ${u.id === state.activeUserId ? 'सक्रिय' : 'चुनें'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * 11. ADMIN PANEL CONTROLS & YEARLY/MONTHLY/DATE-WISE SALES REPORT
+         */
+        function getOrderDateObj(ord) {
+            if (ord && ord.createdAtMs && !isNaN(Number(ord.createdAtMs))) {
+                return new Date(Number(ord.createdAtMs));
+            }
+            if (ord && ord.createdAt) {
+                const m = String(ord.createdAt).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+                if (m) {
+                    return new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+                }
+                const parsed = new Date(ord.createdAt);
+                if (!isNaN(parsed.getTime())) return parsed;
+            }
+            return new Date();
+        }
+
+        function populateAdminSalesYears() {
+            const yearSel = document.getElementById('adminSalesYearSelect');
+            if (!yearSel) return;
+            const prevVal = yearSel.value;
+            const currentYear = new Date().getFullYear();
+            const yearsSet = new Set([currentYear]);
+            state.orders.forEach(ord => {
+                const d = getOrderDateObj(ord);
+                yearsSet.add(d.getFullYear());
+            });
+            const sortedYears = Array.from(yearsSet).sort((a, b) => b - a);
+            yearSel.innerHTML = sortedYears.map(y => `<option value="${y}">साल ${y}</option>`).join('');
+            if (prevVal && sortedYears.includes(Number(prevVal))) {
+                yearSel.value = prevVal;
+            }
+        }
+
+        function selectAdminSalesMonth(monthIdx) {
+            const monthSel = document.getElementById('adminSalesMonthSelect');
+            if (monthSel) {
+                monthSel.value = String(monthIdx);
+                renderAdminSalesReport();
+                document.getElementById('adminDateWiseContainer')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function renderAdminSalesReport() {
+            const yearSel = document.getElementById('adminSalesYearSelect');
+            const monthSel = document.getElementById('adminSalesMonthSelect');
+            if (!yearSel || !monthSel) return;
+
+            const selectedYear = Number(yearSel.value) || new Date().getFullYear();
+            const selectedMonthVal = monthSel.value;
+
+            const yearOrders = state.orders.filter(ord => getOrderDateObj(ord).getFullYear() === selectedYear);
+
+            const monthsData = Array.from({ length: 12 }, (_, idx) => ({
+                monthIdx: idx,
+                monthName: HINDI_MONTHS[idx],
+                orderCount: 0,
+                casesCount: 0,
+                totalSales: 0,
+                orders: []
+            }));
+
+            yearOrders.forEach(ord => {
+                const d = getOrderDateObj(ord);
+                const mIdx = d.getMonth();
+                const mObj = monthsData[mIdx];
+                mObj.orderCount += 1;
+                mObj.totalSales += Number(ord.total || 0);
+                const cases = (ord.items || []).reduce((s, it) => s + Number(it.qty || 0), 0);
+                mObj.casesCount += cases;
+                mObj.orders.push(ord);
+            });
+
+            const yearlySales = monthsData.reduce((s, m) => s + m.totalSales, 0);
+            const yearlyOrders = monthsData.reduce((s, m) => s + m.orderCount, 0);
+            const yearlyCases = monthsData.reduce((s, m) => s + m.casesCount, 0);
+            const bestMonth = monthsData.reduce((best, cur) => (cur.totalSales > best.totalSales ? cur : best), monthsData[0]);
+
+            document.getElementById('adminYearlyKpiGrid').innerHTML = `
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 font-bold">साल ${selectedYear} की कुल सेल</div>
+                    <div class="text-2xl font-extrabold text-emerald-600 mt-1">₹${yearlySales}</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 font-bold">कुल वार्षिक ऑर्डर</div>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">${yearlyOrders}</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 font-bold">कुल बोतल केस बिके</div>
+                    <div class="text-2xl font-extrabold text-sky-700 mt-1">${yearlyCases} केस</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+                    <div class="text-xs text-slate-500 font-bold">सबसे ज़्यादा सेल वाला महीना</div>
+                    <div class="text-sm font-extrabold text-indigo-700 mt-1.5">${bestMonth && bestMonth.totalSales > 0 ? `${bestMonth.monthName.split(' ')[0]} (₹${bestMonth.totalSales})` : 'अभी कोई सेल नहीं'}</div>
+                </div>
+            `;
+
+            const tbody = document.getElementById('adminMonthlyTableBody');
+            tbody.innerHTML = monthsData.map(m => {
+                const isSelected = selectedMonthVal !== 'all' && Number(selectedMonthVal) === m.monthIdx;
+                return `
+                <tr class="${isSelected ? 'bg-indigo-50/80' : 'hover:bg-slate-50'} transition">
+                    <td class="py-2.5 px-3 font-extrabold text-slate-900">${m.monthName}</td>
+                    <td class="py-2.5 px-3 text-center font-bold text-slate-700">${m.orderCount}</td>
+                    <td class="py-2.5 px-3 text-center font-semibold text-sky-700">${m.casesCount} केस</td>
+                    <td class="py-2.5 px-3 text-right font-extrabold ${m.totalSales > 0 ? 'text-emerald-700' : 'text-slate-400'}">₹${m.totalSales}</td>
+                    <td class="py-2.5 px-3 text-right">
+                        <button type="button" onclick="selectAdminSalesMonth(${m.monthIdx})" class="px-2.5 py-1 rounded-lg text-[11px] font-bold ${m.orderCount > 0 ? 'bg-indigo-600 text-white hover:bg-indigo-700' : 'bg-slate-100 text-slate-500'}">
+                            तारीख़ें देखें (${m.orderCount})
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+
+            const targetOrders = selectedMonthVal === 'all'
+                ? yearOrders
+                : monthsData[Number(selectedMonthVal)]?.orders || [];
+
+            const dateTitle = document.getElementById('adminDateWiseTitle');
+            dateTitle.textContent = selectedMonthVal === 'all'
+                ? `साल ${selectedYear} का तारीख़-वार सेल हिसाब (सभी महीने)`
+                : `${HINDI_MONTHS[Number(selectedMonthVal)]} ${selectedYear} — तारीख़-वार सेल हिसाब`;
+
+            const dateMap = new Map();
+            targetOrders.forEach(ord => {
+                const d = getOrderDateObj(ord);
+                const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                const displayDate = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                if (!dateMap.has(key)) {
+                    dateMap.set(key, {
+                        key,
+                        displayDate,
+                        monthName: HINDI_MONTHS[d.getMonth()],
+                        orderCount: 0,
+                        casesCount: 0,
+                        totalSales: 0,
+                        orders: []
+                    });
+                }
+                const entry = dateMap.get(key);
+                entry.orderCount += 1;
+                entry.totalSales += Number(ord.total || 0);
+                entry.casesCount += (ord.items || []).reduce((s, it) => s + Number(it.qty || 0), 0);
+                entry.orders.push(ord);
+            });
+
+            const sortedDates = Array.from(dateMap.values()).sort((a, b) => b.key.localeCompare(a.key));
+            const dateContainer = document.getElementById('adminDateWiseContainer');
+
+            if (!sortedDates.length) {
+                dateContainer.innerHTML = `<div class="text-center py-8 text-xs text-slate-400 font-bold">इस चुने हुए महीने/साल में कोई सेल दर्ज नहीं है।</div>`;
+                return;
+            }
+
+            dateContainer.innerHTML = sortedDates.map(day => `
+                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 space-y-2.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 pb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-xl bg-indigo-600 text-white text-xs font-extrabold">
+                                <i class="fa-regular fa-calendar mr-1"></i> ${day.displayDate}
+                            </span>
+                            <span class="text-xs font-bold text-slate-600">${day.orderCount} ऑर्डर • ${day.casesCount} केस</span>
+                        </div>
+                        <div class="text-base font-extrabold text-emerald-700">कुल सेल: ₹${day.totalSales}</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        ${day.orders.map(o => `
+                            <div class="flex flex-wrap items-center justify-between gap-2 bg-white rounded-xl px-3 py-2 border border-slate-200/80 text-xs">
+                                <div>
+                                    <span class="font-extrabold text-slate-900">${o.customerName}</span>
+                                    <span class="text-slate-500">(${o.id} • ${o.area})</span>
+                                    <div class="text-[11px] text-sky-700 font-semibold mt-0.5">
+                                        ${(o.items || []).map(i => `${i.sizeLabel} × ${i.qty}`).join(', ')}
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="font-extrabold text-slate-900">₹${o.total}</span>
+                                    <button type="button" onclick="openReceiptModal('${o.id}')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-[11px] font-bold text-slate-700">रसीद</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function downloadAdminSalesCSV() {
+            const yearSel = document.getElementById('adminSalesYearSelect');
+            const monthSel = document.getElementById('adminSalesMonthSelect');
+            const selectedYear = Number(yearSel?.value) || new Date().getFullYear();
+            const selectedMonthVal = monthSel?.value || 'all';
+
+            const filtered = state.orders.filter(ord => {
+                const d = getOrderDateObj(ord);
+                if (d.getFullYear() !== selectedYear) return false;
+                if (selectedMonthVal !== 'all' && d.getMonth() !== Number(selectedMonthVal)) return false;
+                return true;
+            });
+
+            if (!filtered.length) {
+                showToast('डाउनलोड करने के लिए इस अवधि में कोई सेल नहीं है।', true);
+                return;
+            }
+
+            const headers = ['Date', 'Month', 'Order ID', 'Customer Name', 'Phone', 'Area', 'Items', 'Total Amount (Rs)', 'Status'];
+            const rows = filtered.map(ord => {
+                const d = getOrderDateObj(ord);
+                const dateStr = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                return [
+                    dateStr,
+                    `"${HINDI_MONTHS[d.getMonth()]}"`,
+                    ord.id,
+                    `"${(ord.customerName || '').replace(/"/g, '""')}"`,
+                    ord.phone || '',
+                    `"${(ord.area || '').replace(/"/g, '""')}"`,
+                    `"${(ord.items || []).map(i => `${i.sizeLabel} x${i.qty}`).join('; ')}"`,
+                    ord.total || 0,
+                    ord.status || ''
+                ];
+            });
+
+            const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `AR_Pure_Drop_Sales_${selectedYear}_${selectedMonthVal === 'all' ? 'FullYear' : 'Month_' + (Number(selectedMonthVal) + 1)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('महीना व तारीख़ सेल रिपोर्ट डाउनलोड हो गई!');
+        }
+
+        function unlockAdminPanel(event) {
+            event.preventDefault();
+            const entered = document.getElementById('adminCodeInput').value.trim();
+            if (entered === state.adminCode) {
+                state.adminUnlocked = true;
+                document.getElementById('adminLockScreen').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                document.getElementById('adminCodeInput').value = '';
+                renderAdminOrders();
+                populateAdminSalesYears();
+                renderAdminSalesReport();
+                renderAdminProductsEditor();
+                populateSiteSettingsForm();
+                showToast('एडमिन पैनल अनलॉक हो गया!');
+            } else {
+                showToast('गलत एडमिन कोड! कृपया सही सीक्रेट कोड डालें।', true);
+            }
+        }
+
+        function lockAdminPanel() {
+            state.adminUnlocked = false;
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('adminLockScreen').classList.remove('hidden');
+            switchTab('home');
+            showToast('एडमिन पैनल लॉक हो गया।');
+        }
+
+        function switchAdminSubTab(sub) {
+            state.adminSubTab = sub;
+            ['orders', 'sales', 'products', 'site', 'security'].forEach(k => {
+                document.getElementById(`adminSub-${k}`).classList.toggle('hidden', k !== sub);
+                const btn = document.getElementById(`adminSubBtn-${k}`);
+                btn.className = k === sub
+                    ? 'px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-indigo-600 text-white'
+                    : 'px-4 py-2.5 rounded-2xl text-xs font-extrabold whitespace-nowrap transition bg-white border border-slate-200 text-slate-700';
+            });
+            if (sub === 'orders') renderAdminOrders();
+            if (sub === 'sales') {
+                populateAdminSalesYears();
+                renderAdminSalesReport();
+            }
+            if (sub === 'products') renderAdminProductsEditor();
+            if (sub === 'site') populateSiteSettingsForm();
+        }
+
+        function renderAdminOrders() {
+            const totalRev = state.orders.reduce((s, o) => s + (o.total || 0), 0);
+            const activeCount = state.orders.filter(o => o.status !== 'Received').length;
+            const recCount = state.orders.filter(o => o.status === 'Received').length;
+
+            document.getElementById('adminStatsGrid').innerHTML = `
+                <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                    <div class="text-xs text-slate-500 font-semibold">कुल ऑर्डर</div>
+                    <div class="text-2xl font-extrabold text-slate-900 mt-1">${state.orders.length}</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                    <div class="text-xs text-slate-500 font-semibold">कुल बिक्री</div>
+                    <div class="text-2xl font-extrabold text-emerald-600 mt-1">₹${totalRev}</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                    <div class="text-xs text-slate-500 font-semibold">पेंडिंग / चल रहे</div>
+                    <div class="text-2xl font-extrabold text-amber-600 mt-1">${activeCount}</div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 p-4">
+                    <div class="text-xs text-slate-500 font-semibold">डिलीवर / रिसीव्ड</div>
+                    <div class="text-2xl font-extrabold text-sky-600 mt-1">${recCount}</div>
+                </div>`;
+
+            const listEl = document.getElementById('adminOrdersContainer');
+            if (!state.orders.length) {
+                listEl.innerHTML = `<p class="text-sm text-slate-400 text-center py-6">अभी तक कोई ऑर्डर नहीं आया है।</p>`;
+                return;
+            }
+
+            listEl.innerHTML = state.orders.map(ord => `
+                <div class="rounded-2xl border border-slate-200 p-4 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="space-y-1 text-xs">
+                        <div class="font-extrabold text-slate-900 text-sm">${ord.id} • ₹${ord.total} <span class="text-slate-500 font-normal">(${ord.paymentMode})</span></div>
+                        <div><strong>${ord.customerName}</strong> (${ord.phone}) — ${ord.area}</div>
+                        <div class="text-slate-500">${ord.createdAt} • ${(ord.items || []).map(i => `${i.sizeLabel}×${i.qty}`).join(', ')}</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select onchange="adminUpdateOrderStatus('${ord.id}', this.value)" class="px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold focus:ring-2 focus:ring-indigo-500">
+                            ${['Confirmed', 'Packed', 'Out for Delivery', 'Received'].map(st => `<option value="${st}" ${ord.status === st ? 'selected' : ''}>${st}</option>`).join('')}
+                        </select>
+                        <button onclick="openReceiptModal('${ord.id}')" class="px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs font-bold">बिल</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function adminUpdateOrderStatus(orderId, newStatus) {
+            const ord = state.orders.find(o => o.id === orderId);
+            if (!ord) return;
+            ord.status = newStatus;
+            if (newStatus === 'Received' && !ord.receivedAt) {
+                ord.receivedAt = new Date().toLocaleTimeString('hi-IN', { hour: '2-digit', minute: '2-digit' });
+            }
+            renderOrders();
+            renderAdminOrders();
+            await syncOrderToCloud(ord);
+            showToast(`ऑर्डर ${orderId} का स्टेटस "${newStatus}" अपडेट हो गया!`);
+        }
+
+        function renderAdminProductsEditor() {
+            const grid = document.getElementById('adminProductsEditorGrid');
+            if (!grid) return;
+
+            grid.innerHTML = state.products.map(p => `
+                <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-24 h-28 rounded-2xl bg-sky-50 border border-sky-100 p-1.5 flex items-center justify-center overflow-hidden shrink-0">
+                            ${getBottleVisualHTML(p, false)}
+                        </div>
+                        <div class="space-y-2 flex-1">
+                            <div>
+                                <span class="text-xs font-extrabold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full">${p.sizeLabel}</span>
+                                <div class="text-[11px] text-slate-500 mt-1">फ़ोटो फ़ाइल नाम: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-bold text-slate-800">${p.localPhotoFile}</code></div>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="cursor-pointer px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold inline-flex items-center gap-1.5">
+                                    <i class="fa-solid fa-camera"></i> फ़ोटो बदलें
+                                    <input type="file" accept="image/*" class="hidden" onchange="handleProductPhotoUpload(event, '${p.id}')">
+                                </label>
+                                <button type="button" onclick="downloadBottlePNG('${p.id}')" class="px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold hover:bg-emerald-100">
+                                    <i class="fa-solid fa-download mr-1"></i> PNG डाउनलोड
+                                </button>
+                                ${p.customImage ? `
+                                    <button type="button" onclick="resetProductPhoto('${p.id}')" class="px-2.5 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold">रीसेट</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+
+                    <form onsubmit="saveProductEdits(event, '${p.id}')" class="space-y-3 border-t border-slate-100 pt-3">
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-bold text-sky-700 mb-1">बोतल साइज़ (जैसे: 250 ml)</label>
+                                <input id="editSizeLabel-${p.id}" type="text" value="${p.sizeLabel}" required class="w-full px-3 py-2 rounded-xl border-2 border-sky-200 bg-sky-50/40 text-xs font-extrabold text-sky-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-amber-700 mb-1">केस बैज (जैसे: 48 बोतल केस)</label>
+                                <input id="editBadge-${p.id}" type="text" value="${p.badge}" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-amber-800">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            <div class="col-span-2">
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">प्रोडक्ट का नाम</label>
+                                <input id="editName-${p.id}" type="text" value="${p.name}" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">प्राइस (₹)</label>
+                                <input id="editPrice-${p.id}" type="number" min="1" value="${p.price}" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-extrabold text-sky-700">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">पैक जानकारी (Case Info)</label>
+                            <input id="editPack-${p.id}" type="text" value="${p.packInfo}" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-600 mb-1">विवरण (Description)</label>
+                            <input id="editDesc-${p.id}" type="text" value="${p.desc}" required class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs">
+                        </div>
+                        <button type="submit" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+                            <i class="fa-solid fa-floppy-disk mr-1"></i> ${p.sizeLabel} बदलाव सेव करें
+                        </button>
+                    </form>
+                </div>
+            `).join('');
+        }
+
+        function populateSiteSettingsForm() {
+            const cfg = state.siteConfig;
+            document.getElementById('setBrandName').value = cfg.brandName;
+            document.getElementById('setStickerAddr').value = cfg.stickerAddress;
+            document.getElementById('setHeroTitle').value = cfg.heroTitle;
+            document.getElementById('setHeroBadge').value = cfg.heroBadge;
+            document.getElementById('setHeroSubtitle').value = cfg.heroSubtitle;
+            document.getElementById('setPlantAddress').value = cfg.plantAddress;
+            document.getElementById('setPlantHelpline').value = cfg.plantHelpline;
+            document.getElementById('setWhatsappNumber').value = cfg.whatsappNumber || '';
+        }
+
+        async function saveSiteSettings(event) {
+            event.preventDefault();
+            state.siteConfig.brandName = document.getElementById('setBrandName').value.trim();
+            state.siteConfig.stickerAddress = document.getElementById('setStickerAddr').value.trim();
+            state.siteConfig.heroTitle = document.getElementById('setHeroTitle').value.trim();
+            state.siteConfig.heroBadge = document.getElementById('setHeroBadge').value.trim();
+            state.siteConfig.heroSubtitle = document.getElementById('setHeroSubtitle').value.trim();
+            state.siteConfig.plantAddress = document.getElementById('setPlantAddress').value.trim();
+            state.siteConfig.plantHelpline = document.getElementById('setPlantHelpline').value.trim();
+            state.siteConfig.whatsappNumber = document.getElementById('setWhatsappNumber').value.replace(/\D/g, '');
+
+            try {
+                applySiteConfig();
+                renderProducts();
+                renderCart();
+                await syncSiteSettingsToCloud();
+                showToast('साइट की सभी सेटिंग्स व WhatsApp नंबर लाइव सेव हो गए!');
+            } catch (err) {
+                showToast('सेटिंग्स सेव करने में समस्या आई।', true);
+            }
+        }
+
+        async function changeAdminCode(event) {
+            event.preventDefault();
+            const oldCode = document.getElementById('oldAdminCode').value.trim();
+            const newCode = document.getElementById('newAdminCode').value.trim();
+            if (oldCode !== state.adminCode) {
+                showToast('पुराना एडमिन कोड गलत है!', true);
+                return;
+            }
+            if (newCode.length < 4) {
+                showToast('नया कोड कम से कम 4 अक्षर/अंक का होना चाहिए।', true);
+                return;
+            }
+            state.adminCode = newCode;
+            document.getElementById('oldAdminCode').value = '';
+            document.getElementById('newAdminCode').value = '';
+            await syncSiteSettingsToCloud();
+            showToast(`नया एडमिन कोड (${newCode}) सभी डिवाइस पर सेव हो गया!`);
+        }
+
+        function openReceiptModal(orderId) {
+            const ord = state.orders.find(o => o.id === orderId);
+            if (!ord) return;
+
+            const receiptText = `${state.siteConfig.brandName} (${state.siteConfig.stickerAddress})\n` +
+                `ऑर्डर नं: ${ord.id} | स्टेटस: ${ord.status}\n` +
+                `ग्राहक: ${ord.customerName} (${ord.phone})\n` +
+                `पता: ${ord.address}, ${ord.area}\n` +
+                `प्रोडक्ट्स:\n${(ord.items || []).map(i => `- ${i.sizeLabel} x ${i.qty} = ₹${i.price * i.qty}`).join('\n')}\n` +
+                `कुल राशि: ₹${ord.total} (${ord.paymentMode})`;
+
+            document.getElementById('receiptModalBody').innerHTML = `
+                <div class="bg-sky-50 border border-sky-100 rounded-2xl p-4 text-center">
+                    <div class="font-extrabold text-sky-900 text-base">${state.siteConfig.brandName}</div>
+                    <div class="text-xs text-sky-700">${state.siteConfig.stickerAddress}</div>
+                    <div class="text-[11px] text-slate-500 mt-1">ऑर्डर नं: <strong>${ord.id}</strong> • ${ord.createdAt}</div>
+                </div>
+                <div class="space-y-1 text-xs text-slate-700">
+                    <p><strong>ग्राहक:</strong> ${ord.customerName} (${ord.phone})</p>
+                    <p><strong>पता:</strong> ${ord.address}, ${ord.area}</p>
+                    <p><strong>पेमेंट:</strong> ${ord.paymentMode}</p>
+                </div>
+                <div class="border-t border-b border-slate-100 py-2.5 space-y-1.5 text-xs">
+                    ${(ord.items || []).map(i => `
+                        <div class="flex justify-between">
+                            <span>${i.sizeLabel} × ${i.qty}</span>
+                            <span class="font-bold">₹${i.price * i.qty}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="flex justify-between font-extrabold text-base text-slate-900">
+                    <span>कुल राशि</span>
+                    <span class="text-sky-700">₹${ord.total}</span>
+                </div>`;
+
+            document.getElementById('copyReceiptBtn').onclick = () => copyText(receiptText, 'डिजिटल रसीद कॉपी हो गई!');
+            document.getElementById('whatsappReceiptBtn').onclick = () => sendOrderToWhatsApp(ord.id);
+            document.getElementById('receiptModal').classList.remove('hidden');
+        }
+
+        function formatWhatsAppNumber(raw) {
+            const digits = (raw || '').replace(/\D/g, '');
+            if (!digits) return '';
+            return digits.length === 10 ? `91${digits}` : digits;
+        }
+
+        function openWhatsAppChat(customMessage = '') {
+            const num = formatWhatsAppNumber(state.siteConfig.whatsappNumber);
+            if (!num) {
+                showToast('कृपया पहले एडमिन पैनल में अपना WhatsApp नंबर सेट करें।', true);
+                return;
+            }
+            const defaultMsg = `नमस्ते ${state.siteConfig.brandName} (${state.siteConfig.stickerAddress})! मुझे पानी की बोतलें ऑर्डर करनी हैं।`;
+            const url = `https://wa.me/${num}?text=${encodeURIComponent(customMessage || defaultMsg)}`;
+            window.open(url, '_blank');
+        }
+
+        function sendOrderToWhatsApp(orderId) {
+            const ord = state.orders.find(o => o.id === orderId);
+            if (!ord) return;
+            const msg = `*नया ऑर्डर - ${state.siteConfig.brandName} (${state.siteConfig.stickerAddress})*\n` +
+                `ऑर्डर नं: ${ord.id}\n` +
+                `ग्राहक: ${ord.customerName} (${ord.phone})\n` +
+                `एरिया: ${ord.area}\n` +
+                `पता: ${ord.address}\n` +
+                `बोतलें:\n${(ord.items || []).map(i => `• ${i.sizeLabel} × ${i.qty} = ₹${i.price * i.qty}`).join('\n')}\n` +
+                `*कुल राशि: ₹${ord.total}* (${ord.paymentMode})`;
+            openWhatsAppChat(msg);
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId)?.classList.add('hidden');
+        }
+
+        function copyText(text, successMsg) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg);
+            } catch (err) {
+                showToast('कॉपी करने में समस्या आई।', true);
+            }
+            document.body.removeChild(ta);
+        }
+
+        let toastTimer = null;
+        function showToast(msg, isError = false) {
+            const box = document.getElementById('toastBox');
+            const icon = document.getElementById('toastIcon');
+            document.getElementById('toastMessage').textContent = msg;
+            icon.className = isError ? 'fa-solid fa-circle-exclamation text-rose-400' : 'fa-solid fa-circle-check text-emerald-400';
+            box.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => box.classList.add('hidden'), 3200);
+        }
+
+        function switchTab(tabName) {
+            state.activeTab = tabName;
+            document.querySelectorAll('.tab-section').forEach(sec => {
+                sec.classList.toggle('hidden', sec.id !== `tab-${tabName}`);
+            });
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const active = btn.dataset.nav === tabName;
+                btn.classList.toggle('bg-white', active);
+                btn.classList.toggle('text-sky-700', active);
+                btn.classList.toggle('shadow-sm', active);
+                btn.classList.toggle('text-slate-600', !active);
+            });
+            document.querySelectorAll('.mnav-btn').forEach(btn => {
+                const active = btn.dataset.mnav === tabName;
+                btn.classList.toggle('text-sky-600', active);
+                btn.classList.toggle('bg-sky-50', active);
+                btn.classList.toggle('text-slate-500', !active);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        Object.assign(window, {
+            handleLogoTap,
+            switchTab,
+            updateCart,
+            openStickerModal,
+            closeModal,
+            renderAreas,
+            copyPlantAddress,
+            placeOrder,
+            filterOrders,
+            markOrderReceived,
+            saveUserAccount,
+            switchActiveUser,
+            openReceiptModal,
+            unlockAdminPanel,
+            lockAdminPanel,
+            switchAdminSubTab,
+            adminUpdateOrderStatus,
+            renderAdminSalesReport,
+            selectAdminSalesMonth,
+            downloadAdminSalesCSV,
+            saveSiteSettings,
+            changeAdminCode,
+            handleBannerPhotoUpload,
+            resetBannerPhoto,
+            handleProductPhotoUpload,
+            resetProductPhoto,
+            saveProductEdits,
+            downloadBottlePNG,
+            openWhatsAppChat,
+            sendOrderToWhatsApp,
+            installPWAApp
+        });
+
+        let deferredInstallPrompt = null;
+        const isStandaloneApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (isStandaloneApp) {
+            const btn = document.getElementById('installAppBtn');
+            if (btn) btn.classList.add('hidden');
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            if (!isStandaloneApp) {
+                const btn = document.getElementById('installAppBtn');
+                if (btn) btn.classList.remove('hidden');
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            const btn = document.getElementById('installAppBtn');
+            if (btn) btn.classList.add('hidden');
+            showToast('AR Pure Drop ऐप आपके फ़ोन में इंस्टॉल हो गया!');
+        });
+
+        async function installPWAApp() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                const { outcome } = await deferredInstallPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    showToast('ऐप इंस्टॉल हो रहा है...');
+                }
+                deferredInstallPrompt = null;
+            } else {
+                showToast('Chrome के ऊपर दाईं ओर 3 डॉट (⋮) दबाएं → "Install app" या "Add to Home screen" चुनें!');
+            }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch((err) => {
+                    console.log('Service Worker registration skipped:', err);
+                });
+            });
+        }
+
+        // Boot Application
+        loadLocalBackup();
+        populateAreaDropdowns();
+        applySiteConfig();
+        renderProducts();
+        renderAreas();
+        renderCart();
+        renderOrders();
+        renderAccountSection();
+        updateCartBadges();
+        const urlParams = new URLSearchParams(window.location.search);
+        switchTab(urlParams.get('admin') === '1' ? 'admin' : 'home');
+        initCloudSync();
+    </script>
+</body>
+</html>
